@@ -1,14 +1,32 @@
 version: '3'
 
 services:
-  map:
-    image: overv/openstreetmap-tile-server
+  import:
+    image: map:v1
+    build:
+      context: .
+      dockerfile: Dockerfile
     volumes:
-      - openstreetmap-data:/var/lib/postgresql/12/main
+      - openstreetmap-data:${PGDATA}
+      - ${PGDATAFILE}:/data.osm.pbf
+    command: "import"
+  map:
+    image: map:v1
+    build:
+      context: .
+      dockerfile: Dockerfile   
+    volumes:
+      - openstreetmap-data:${PGDATA}
+      - openstreetmap-rendered-tiles:${TILESDIR}      
     ports:
       - "8080:80"
-    command: "run"
+    command: "run"      
+     
 
 volumes:
   openstreetmap-data:
     external: true
+    name: ${PGVOLUME}
+  openstreetmap-rendered-tiles:
+    external: true
+    name: ${TILESVOLUME}    
