@@ -197,10 +197,7 @@ my thought, and I set out to learn how to do it. Read on if you're interested.
 # minikube
 
 [minikube](https://minikube.sigs.k8s.io/docs/) implements a local Kubernetes
-cluster on macOS, Linux, and Windows. There are other local K8s
-implementations, such as [kind](https://kind.sigs.k8s.io/). I use minikube
-because it worked the first time I tried it, whereas kind didn't. And after
-that I've never looked back. I run minikube on Ubuntu.
+cluster on macOS, Linux, and Windows.  I run minikube on Ubuntu.
 
 Get a Linux shell and install minikube:
 
@@ -302,10 +299,10 @@ VSCode and navigate to the the Helm chart *osm-map*. View
 
 ![Visual Studio Code: map-deployment.yaml](images/VSC4.png)
 
-We're deploying a service. It is intended to run indefinitely, and absent
+You're deploying a service. It is intended to run indefinitely, and absent
 our intervention, K8s will see to it that it does just that.
 
-Because we're deploying a service, *map-deployment.yaml* defines the
+Because you're deploying a service, *map-deployment.yaml* defines the
 *apiVersion* to be *apps/v1* and the *kind* to be *Deployment*. Service details
 are defined in the *templates/map-service.yaml* file.
 
@@ -333,12 +330,112 @@ deployment, as seen below:
 
 ![Windows Terminal: kubectl restart deployment](images/WT12.png)
 
+If you wish to delete the import job and/or map deployment, type:
+
+    helm uninstall import
+    helm uninstall map
+    
+# kind
+
+[kind](https://kind.sigs.k8s.io/) is a tool for running local Kubernetes
+clusters using Docker container "nodes". kind (**K**ubernetes **In**
+**D**ocker) runs on macOS, Linux, and Windows.  I run kind on Ubuntu.
+
+Install kind:
+
+    curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.9.0/kind-linux-amd64
+    chmod +x ./kind
+    sudo mv ./kind /usr/local/bin
+    
+<br/>In order to set up a kind cluster, the first thing to do is to pull the
+[""node"" image](https://kind.sigs.k8s.io/docs/design/node-image/). Node image
+releases are available at <https://github.com/kubernetes-sigs/kind/releases>.
+
+For example, if you want release v0.9.0, then type
+**docker pull kindest/node:v1.19.1@sha256:98cf5288864662e37115e362b23e4369c8c4a408f99cbc06e58ac30ddc721600**.
+
+When the pull completes, you're ready to create a cluster. You need, at a
+minimum, to configure the cluster with these settings:
+
+* Mount */mnt/c/home/osm/data* on */mnt/data* in the node container. That
+way the import job will see your PBF extract.
+
+* Expose the map service on port 31789. This enables you to browse the map.
+
+I created a file called *kind-config.yaml* for kind configuration, as shown
+below:
+
+![Visual Studio Code: kind-config.yaml](images/VSC6.png)
+
+kind has the neat feature that you can define multiple nodes for your cluster.
+My *kind-config.yaml* defines a single node: the required control-plane node.
+If you like, you can add one or more worker nodes to the configuration.
+
+Create the cluster by typing **kind create cluster --config kind-config.yaml**,
+as shown below:
+
+![Windows Terminal: kind create cluster](images/WT13.png)
+
+Once the cluster is created, type **kubectl cluster-info --context kind-kind**,
+as instructed.
+
+The last step in preparing your cluster is to load image *map:v1* into it. Do
+that by typing **kind load docker-image map:v1**, as seen below:
+
+![Windows Terminal: kind load docker-image](images/WT14.png)
+
+You're all set. Run the import job by typing **helm install import
+./osm-import**. When it completes, run the map service by typing **helm
+install map ./osm-map**. Browse <http://localhost:31789>, and you should see
+the world map.
+
+If you wish to monitor your cluster with a dashboard, see the
+instructions at
+[Local Kubernetes with kind, Helm & Dashboard](https://medium.com/@munza/local-kubernetes-with-kind-helm-dashboard-41152e4b3b3d), which worked fine for me
+with zero modifications.
+
+The proof is in the pudding. Below the dashboard gets installed:
+
+![Windows Terminal: install dashboard](images/WT15.png)
+
+Next we acquire the service account token, as shown here:
+
+![Windows Terminal: acquire service account token](images/WT16.png)
+
+If you're wondering about the definition of *service-account.yaml*, which
+is referenced in the screenshot, know that you can view it in the next
+section.
+
+Plug the token into the dashboard, and it comes right up:
+
+![kind dashboard](images/Dashboard2.png)
+
+If you want to delete the cluster, type **kind delete cluster**.
+
+# minikube vs. kind
+
+You can find detailed pros and cons evaluations of minikube and kind online.
+I won't get into all that. I will say that kind has a definite downside for
+mapping, which is that, as far as I can tell, persistent volumes (of default
+StorageClass) don't actually persist. I believe that is because the VM runs in
+a Docker container, and when the container stops, the volumes go away. This
+means that in order to truly persist the volumes, you have to dump them into a
+tarfile or something similar before the cluster is deleted, then restore them
+the next time you want to use them.
+
+This is an obstacle for mapping, because both the PostgreSQL database and
+rendered tiles need to be persisted. You don't want to be constantly
+repopulating the database and rerendering the tiles.
+
+Because minikube's VM runs outside of Docker, minikube persistent volumes
+persist after minikube is stopped, which is the behavior you want for mapping.
+
 # Odds and Ends
 
 Remember when I said that there are at least two ways to monitor K8S? Well,
 there's a third way, which is with VSCode, as displayed below:
 
-![Visual Studio Code: K8s](images/VSC5.png)
+![Visual Studio Code: K8s](images/VSC7.png)
 
 To get this functionality, install the VSCode [Kubernetes](https://marketplace.visualstudio.com/items?itemName=ms-kubernetes-tools.vscode-kubernetes-tools)
 extension.
