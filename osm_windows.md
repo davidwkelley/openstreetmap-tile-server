@@ -45,6 +45,7 @@ I like these add-on utilities:
 
 * [dos2unix](https://www.howtoinstall.me/ubuntu/18-04/dos2unix/)
 * [kompose](https://kompose.io/)
+* [tree](https://askubuntu.com/questions/572093/how-to-install-tree-with-command-line)
 
 # Windows Terminal
 
@@ -416,19 +417,13 @@ If you want to delete the cluster, type **kind delete cluster**.
 
 You can find detailed pros and cons evaluations of minikube and kind online.
 I won't get into all that. I will say that kind has a definite downside for
-mapping, which is that, as far as I can tell, persistent volumes (of default
-StorageClass) don't actually persist. I believe that is because the VM runs in
-a Docker container, and when the container stops, the volumes go away. This
-means that in order to truly persist the volumes, you have to dump them into a
-tarfile or something similar before the cluster is deleted, then restore them
-the next time you want to use them.
-
-This is an obstacle for mapping, because both the PostgreSQL database and
+mapping, which is that
+[you can't stop and (re)start a kind cluster](https://github.com/kubernetes-sigs/kind/issues/479). This is problematic because both the PostgreSQL database and
 rendered tiles need to be persisted. You don't want to be constantly
 repopulating the database and rerendering the tiles.
 
-Because minikube's VM runs outside of Docker, minikube persistent volumes
-persist after minikube is stopped, which is the behavior you want for mapping.
+minikube has **start** and **stop** commands, which is the behavior you want
+for mapping.
 
 # Odds and Ends
 
