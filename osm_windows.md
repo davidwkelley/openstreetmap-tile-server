@@ -46,6 +46,7 @@ I like these add-on utilities:
 * [dos2unix](https://www.howtoinstall.me/ubuntu/18-04/dos2unix/)
 * [kompose](https://kompose.io/)
 * [tree](https://askubuntu.com/questions/572093/how-to-install-tree-with-command-line)
+* [kubectl autocompletion](https://kubernetes.io/docs/tasks/tools/install-kubectl/#enabling-shell-autocompletion)
 
 # Windows Terminal
 
@@ -187,7 +188,7 @@ When you're done exploring, type **docker-compose down** to end map rendering.
 
 # Kubernetes
 
-Docker and Docker-Compose are adequate to the task of running a tile server on
+Docker and Docker Compose are adequate to the task of running a tile server on
 your Windows machine. Knowing what you know now, you can create and render your
 own OSM maps.
 
@@ -425,6 +426,26 @@ repopulating the database and rerendering the tiles.
 minikube has **start** and **stop** commands, which is the behavior you want
 for mapping.
 
+# kustomize
+
+[kustomize](https://github.com/kubernetes-sigs/kustomize) lets you customize
+raw, template-free YAML files for multiple purposes, leaving the original YAML
+untouched and usable as is. kustomize is integrated with kubectl as of
+v1.14.
+
+kustomize takes a different approach than Helm. You can find online
+comparisons between Helm and kustomize. I won't repeat that discussion here.
+I will say that kustomize makes a lot of sense for my application.  I just
+happened to encounter Helm first on my journey of discovery.
+
+If you'd like to try kustomize with OSM maps on your cluster, then follow these
+steps:
+
+1. Create the PersistentVolumeClaim for the PostgreSQL database: **kubectl apply -f base-import/open\*.yaml**
+2. Run the import job: **kubectl apply -k ./base-import**
+3. Create the PersistentVolumeClaim for the rendered tiles: **kubectl apply -f base-map/open\*.yaml**
+4. Run the map deployment: **kubectl apply -k ./base-map**
+
 # Odds and Ends
 
 Remember when I said that there are at least two ways to monitor K8S? Well,
@@ -439,7 +460,8 @@ The whole Docker/WSL/VSCode integration is pretty fantastic, in my opinion.
 
 # To Do
 
-* Templatize the Helm charts.
+* <strike>Templatize the Helm charts.</strike> Never mind.  Use kustomize
+overlays instead.
 
 # See Also
 

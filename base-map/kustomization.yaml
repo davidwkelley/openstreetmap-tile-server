@@ -1,0 +1,7 @@
+commonLabels:
+  app: osm-import
+
+resources:
+- map-deployment.yaml
+- map-service.yaml
+- openstreetmap-rendered-tiles-persistentvolumeclaim.yaml
