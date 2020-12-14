@@ -121,18 +121,6 @@ RUN mkdir -p /home/renderer/src \
  && ldconfig \
  && cd ..
 
-# Configure stylesheet
-RUN mkdir -p /home/renderer/src/openstreetmap-carto
-
-COPY openstreetmap-carto/ /home/renderer/src/openstreetmap-carto/
-
-RUN cd /home/renderer/src/openstreetmap-carto \
- && rm -rf .git \
- && npm install -g carto@0.18.2 \
- && carto project.mml > mapnik.xml \
- && scripts/get-shapefiles.py \
- && rm /home/renderer/src/openstreetmap-carto/data/*.zip
-
 # Configure renderd
 RUN sed -i 's/renderaccount/renderer/g' /usr/local/etc/renderd.conf \
  && sed -i 's/\/truetype//g' /usr/local/etc/renderd.conf \
@@ -174,6 +162,18 @@ RUN mkdir -p /home/renderer/src \
  && git checkout 612fe3e040d8bb70d2ab3b133f3b2cfc6c940520 \
  && rm -rf .git \
  && chmod u+x /home/renderer/src/regional/trim_osc.py
+
+# Configure stylesheet
+RUN mkdir -p /home/renderer/src/openstreetmap-carto
+
+COPY openstreetmap-carto/ /home/renderer/src/openstreetmap-carto/
+
+RUN cd /home/renderer/src/openstreetmap-carto \
+ && rm -rf .git \
+ && npm install -g carto@0.18.2 \
+ && carto project.mml > mapnik.xml \
+ && scripts/get-shapefiles.py \
+ && rm /home/renderer/src/openstreetmap-carto/data/*.zip
 
 # Set the locale
 RUN sed -i '/en_US.UTF-8/s/^# //g' /etc/locale.gen && \
