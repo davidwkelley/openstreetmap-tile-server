@@ -122,10 +122,11 @@ RUN mkdir -p /home/renderer/src \
  && cd ..
 
 # Configure stylesheet
-RUN mkdir -p /home/renderer/src \
- && cd /home/renderer/src \
- && git clone --single-branch --branch sasv1.0.0 https://github.com/davidwkelley/openstreetmap-carto.git --depth 1 \
- && cd openstreetmap-carto \
+RUN mkdir -p /home/renderer/src/openstreetmap-carto
+
+COPY openstreetmap-carto/ /home/renderer/src/openstreetmap-carto/
+
+RUN cd /home/renderer/src/openstreetmap-carto \
  && rm -rf .git \
  && npm install -g carto@0.18.2 \
  && carto project.mml > mapnik.xml \
