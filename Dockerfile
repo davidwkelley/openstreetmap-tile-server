@@ -167,6 +167,7 @@ RUN mkdir -p /home/renderer/src \
 RUN mkdir -p /home/renderer/src/openstreetmap-carto
 
 COPY openstreetmap-carto/ /home/renderer/src/openstreetmap-carto/
+COPY project.mml /home/renderer/src/openstreetmap-carto/
 
 RUN cd /home/renderer/src/openstreetmap-carto \
  && rm -rf .git \
