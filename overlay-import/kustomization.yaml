@@ -1,0 +1,4 @@
+bases:
+- ../base-import
+patchesStrategicMerge:
+- patch.yaml
