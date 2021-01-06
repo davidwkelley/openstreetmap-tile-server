@@ -168,6 +168,7 @@ RUN mkdir -p /home/renderer/src/openstreetmap-carto
 
 COPY openstreetmap-carto/ /home/renderer/src/openstreetmap-carto/
 COPY project.mml /home/renderer/src/openstreetmap-carto/
+COPY get-shapefiles.py /home/renderer/src/openstreetmap-carto/scripts
 
 RUN cd /home/renderer/src/openstreetmap-carto \
  && rm -rf .git \
