@@ -1,3 +1,6 @@
 [submodule "openstreetmap-carto"]
 	path = openstreetmap-carto
 	url = https://github.com/davidwkelley/openstreetmap-carto
+[submodule "osm-carto-highcontrast"]
+	path = osm-carto-highcontrast
+	url = https://github.com/SAS-OSM/osm-carto-highcontrast
