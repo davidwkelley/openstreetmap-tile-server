@@ -122,9 +122,7 @@ RUN mkdir -p /home/renderer/src \
  && cd ..
 
 # Configure renderd
-RUN sed -i 's/renderaccount/renderer/g' /usr/local/etc/renderd.conf \
- && sed -i 's/\/truetype//g' /usr/local/etc/renderd.conf \
- && sed -i 's/hot/tile/g' /usr/local/etc/renderd.conf
+COPY renderd.conf /usr/local/etc/
 
 # Configure Apache
 RUN mkdir /var/lib/mod_tile \
@@ -136,6 +134,10 @@ RUN mkdir /var/lib/mod_tile \
  && a2enconf mod_tile && a2enconf mod_headers
 COPY apache.conf /etc/apache2/sites-available/000-default.conf
 COPY leaflet-demo.html /var/www/html/index.html
+COPY leaflet-demo-default.html /var/www/html/
+COPY leaflet-demo-highcontrast.html /var/www/html/
+COPY L.Control.ZoomDisplay.css /var/www/html/
+COPY L.Control.ZoomDisplay.js /var/www/html/
 RUN ln -sf /dev/stdout /var/log/apache2/access.log \
  && ln -sf /dev/stderr /var/log/apache2/error.log
 
@@ -163,7 +165,7 @@ RUN mkdir -p /home/renderer/src \
  && rm -rf .git \
  && chmod u+x /home/renderer/src/regional/trim_osc.py
 
-# Configure stylesheet
+# Configure stylesheets
 RUN mkdir -p /home/renderer/src/openstreetmap-carto
 
 COPY openstreetmap-carto/ /home/renderer/src/openstreetmap-carto/
@@ -176,6 +178,16 @@ RUN cd /home/renderer/src/openstreetmap-carto \
  && carto project.mml > mapnik.xml \
  && scripts/get-shapefiles.py \
  && rm /home/renderer/src/openstreetmap-carto/data/*.zip
+
+RUN mkdir -p /home/renderer/src/osm-carto-highcontrast
+
+COPY osm-carto-highcontrast/ /home/renderer/src/osm-carto-highcontrast/
+COPY project.mml /home/renderer/src/osm-carto-highcontrast/
+
+RUN cd /home/renderer/src/osm-carto-highcontrast \
+ && rm -rf .git \
+ && carto project.mml > mapnik.xml \
+ && ln -s /home/renderer/src/openstreetmap-carto/data .
 
 # Set the locale
 RUN sed -i '/en_US.UTF-8/s/^# //g' /etc/locale.gen && \
