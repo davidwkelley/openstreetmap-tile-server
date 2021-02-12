@@ -132,12 +132,16 @@ RUN mkdir /var/lib/mod_tile \
  && echo "LoadModule tile_module /usr/lib/apache2/modules/mod_tile.so" >> /etc/apache2/conf-available/mod_tile.conf \
  && echo "LoadModule headers_module /usr/lib/apache2/modules/mod_headers.so" >> /etc/apache2/conf-available/mod_headers.conf \
  && a2enconf mod_tile && a2enconf mod_headers
+
+# Configure Leaflet
 COPY apache.conf /etc/apache2/sites-available/000-default.conf
 COPY leaflet-demo.html /var/www/html/index.html
-COPY leaflet-demo-default.html /var/www/html/
-COPY leaflet-demo-highcontrast.html /var/www/html/
+COPY leaflet-side-by-side.js /var/www/html/
+COPY layout.css /var/www/html/
+COPY range.css /var/www/html/
 COPY L.Control.ZoomDisplay.css /var/www/html/
 COPY L.Control.ZoomDisplay.js /var/www/html/
+
 RUN ln -sf /dev/stdout /var/log/apache2/access.log \
  && ln -sf /dev/stderr /var/log/apache2/error.log
 
@@ -178,11 +182,11 @@ RUN cd /home/renderer/src/openstreetmap-carto \
  && carto project.mml > mapnik.xml \
  && scripts/get-shapefiles.py \
  && rm /home/renderer/src/openstreetmap-carto/data/*.zip
-
-RUN mkdir -p /home/renderer/src/osm-carto-highcontrast
+ 
+ RUN mkdir -p /home/renderer/src/osm-carto-highcontrast
 
 COPY osm-carto-highcontrast/ /home/renderer/src/osm-carto-highcontrast/
-COPY project.mml /home/renderer/src/osm-carto-highcontrast/
+COPY project-hc.mml /home/renderer/src/osm-carto-highcontrast/project.mml
 
 RUN cd /home/renderer/src/osm-carto-highcontrast \
  && rm -rf .git \

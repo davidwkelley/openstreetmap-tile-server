@@ -73,6 +73,13 @@ settings = {
         'type': 'zip',
         'shp_basename': ['icesheet_outlines'],
         'long_opt': '--icesheet-outlines'
+    },
+    6: {
+        'directory': 'coastlines-split-3857',
+        'url': 'https://osmdata.openstreetmap.de/download/coastlines-split-3857.zip',  # noqa
+        'type': 'zip',
+        'shp_basename': ['lines'],
+        'long_opt': '--coastlines'
     }
 }
 
