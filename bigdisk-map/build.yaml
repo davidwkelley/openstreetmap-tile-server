@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f docker-compose-out.yml
+    kompose.version: 1.22.0 (955b78124)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: map-bigdisk
+  name: map-bigdisk
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: map-bigdisk
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert -f docker-compose-out.yml
+        kompose.version: 1.22.0 (955b78124)
+      creationTimestamp: null
+      labels:
+        io.kompose.service: map-bigdisk
+    spec:
+      containers:
+        - args:
+            - run
+          image: docker.io/library/map:v1
+          imagePullPolicy: IfNotPresent
+          name: map-bigdisk
+          ports:
+            - containerPort: 80
+          resources: {}
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/12/main
+              name: openstreetmap-data-bigdisk
+            - mountPath: /var/lib/mod_tile
+              name: openstreetmap-rendered-tiles-bigdisk
+            - mountPath: /dev/shm
+              name: dshm	    
+      restartPolicy: Always
+      volumes:
+        - name: openstreetmap-data-bigdisk
+          hostPath:
+            path: /osm2/extract1/db
+        - name: openstreetmap-rendered-tiles-bigdisk
+          persistentVolumeClaim:
+            claimName: openstreetmap-rendered-tiles-bigdisk
+        - name: dshm
+          emptyDir:
+            medium: Memory
+status: {}

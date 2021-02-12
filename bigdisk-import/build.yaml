@@ -1,0 +1,42 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f docker-compose-out.yml
+    kompose.version: 1.22.0 (955b78124)
+  labels:
+    app: osm-import
+    io.kompose.service: import
+  name: import-bigdisk
+spec:
+  backoffLimit: 4
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert -f docker-compose-out.yml
+        kompose.version: 1.22.0 (955b78124)
+      labels:
+        app: osm-import
+        io.kompose.service: import
+    spec:
+      containers:
+      - args:
+        - import
+        image: docker.io/library/map:v1
+        imagePullPolicy: IfNotPresent
+        name: import-bigdisk
+        resources: {}
+        volumeMounts:
+        - mountPath: /var/lib/postgresql/12/main
+          name: openstreetmap-data-bigdisk
+        - mountPath: /data.osm.pbf
+          name: import-claim1-bigdisk
+      restartPolicy: OnFailure
+      volumes:
+      - hostPath:
+          path: /osm2/extract1/db
+        name: openstreetmap-data-bigdisk
+      - hostPath:
+          path: /mnt/data/data.osm.pbf
+        name: import-claim1-bigdisk
+status: {}
