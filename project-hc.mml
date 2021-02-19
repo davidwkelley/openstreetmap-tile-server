@@ -1040,7 +1040,7 @@ Layer:
       type: shape
     properties:
       minzoom: 3
-      maxzoom: 3
+      maxzoom: 5
   - id: admin-low-zoom
     geometry: linestring
     <<: *extents
