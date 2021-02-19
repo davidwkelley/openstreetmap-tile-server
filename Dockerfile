@@ -174,7 +174,9 @@ RUN mkdir -p /home/renderer/src/openstreetmap-carto
 
 COPY openstreetmap-carto/ /home/renderer/src/openstreetmap-carto/
 COPY project.mml /home/renderer/src/openstreetmap-carto/
+COPY shapefiles/ /home/renderer/src/openstreetmap-carto/data/
 COPY get-shapefiles.py /home/renderer/src/openstreetmap-carto/scripts
+
 
 RUN cd /home/renderer/src/openstreetmap-carto \
  && rm -rf .git \
@@ -182,8 +184,8 @@ RUN cd /home/renderer/src/openstreetmap-carto \
  && carto project.mml > mapnik.xml \
  && scripts/get-shapefiles.py \
  && rm /home/renderer/src/openstreetmap-carto/data/*.zip
- 
- RUN mkdir -p /home/renderer/src/osm-carto-highcontrast
+
+RUN mkdir -p /home/renderer/src/osm-carto-highcontrast
 
 COPY osm-carto-highcontrast/ /home/renderer/src/osm-carto-highcontrast/
 COPY project-hc.mml /home/renderer/src/osm-carto-highcontrast/project.mml
@@ -196,8 +198,8 @@ RUN cd /home/renderer/src/osm-carto-highcontrast \
 # Set the locale
 RUN sed -i '/en_US.UTF-8/s/^# //g' /etc/locale.gen && \
     locale-gen
-ENV LANG en_US.UTF-8  
-ENV LANGUAGE en_US:en  
+ENV LANG en_US.UTF-8
+ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
 
 # Start running
@@ -207,4 +209,3 @@ ENTRYPOINT ["/run.sh"]
 CMD []
 
 EXPOSE 80 5432
-
