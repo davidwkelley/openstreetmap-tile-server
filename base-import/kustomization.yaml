@@ -1,6 +1,0 @@
-commonLabels:
-  app: osm-import
-
-resources:
-- import-job.yaml
-- openstreetmap-data-persistentvolumeclaim.yaml

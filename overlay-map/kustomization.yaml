@@ -1,4 +1,0 @@
-bases:
-- ../base-map
-patchesStrategicMerge:
-- patch.yaml
