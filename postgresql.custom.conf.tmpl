@@ -1,12 +1,10 @@
 # Suggested minimal settings from
 # https://ircama.github.io/osm-carto-tutorials/tile-server-ubuntu/
 
-shared_buffers = 8GB
+shared_buffers = 128MB
 min_wal_size = 1GB
 max_wal_size = 2GB
-maintenance_work_mem = 10GB
-autovacuum = off
-fsync = off
+maintenance_work_mem = 256MB
 
 # Suggested settings from
 # https://github.com/openstreetmap/chef/blob/master/roles/tile.rb#L38-L45

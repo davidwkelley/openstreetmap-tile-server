@@ -36,45 +36,6 @@ settings = {
     # Keys 1, 2, 3, ... set the arg short-options and the related process
     # ordering. Use > 0 to allow processing.
     1: {
-        'directory': 'simplified-water-polygons-split-3857',
-        'url': 'https://osmdata.openstreetmap.de/download/simplified-water-polygons-split-3857.zip',  # noqa
-        'type': 'zip',
-        'shp_basename': ['simplified_water_polygons'],
-        'long_opt': '--simplified-water'
-    },
-
-    2: {
-        'directory': 'ne_110m_admin_0_boundary_lines_land',
-        'url': 'http://naciscdn.org/naturalearth/110m/cultural/ne_110m_admin_0_boundary_lines_land.zip',  # noqa
-        'type': 'zip_dir',
-        'shp_basename': ['ne_110m_admin_0_boundary_lines_land'],
-        'long_opt': '--ne-admin'
-    },
-
-    3: {
-        'directory': 'water-polygons-split-3857',
-        'url': 'https://osmdata.openstreetmap.de/download/water-polygons-split-3857.zip',  # noqa
-        'type': 'zip',
-        'shp_basename': ['water_polygons'],
-        'long_opt': '--water-polygons'
-    },
-
-    4: {
-        'directory': 'antarctica-icesheet-polygons-3857',
-        'url': 'https://osmdata.openstreetmap.de/download/antarctica-icesheet-polygons-3857.zip',  # noqa
-        'type': 'zip',
-        'shp_basename': ['icesheet_polygons'],
-        'long_opt': '--icesheet-polygons'
-    },
-
-    5: {
-        'directory': 'antarctica-icesheet-outlines-3857',
-        'url': 'https://osmdata.openstreetmap.de/download/antarctica-icesheet-outlines-3857.zip',  # noqa
-        'type': 'zip',
-        'shp_basename': ['icesheet_outlines'],
-        'long_opt': '--icesheet-outlines'
-    },
-    6: {
         'directory': 'coastlines-split-3857',
         'url': 'https://osmdata.openstreetmap.de/download/coastlines-split-3857.zip',  # noqa
         'type': 'zip',

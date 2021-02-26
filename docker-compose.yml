@@ -7,18 +7,26 @@ services:
       context: .
       dockerfile: Dockerfile
     volumes:
-      - ${PGDATAFILE}:/data.osm.pbf:ro
-      - ${HOSTPGDATA}:${PGDATA}
-      - /data/planetdb:/planetdb
+      - openstreetmap-data:${PGDATA}
+      - ${PGDATAFILE}:/data.osm.pbf
     command: "import"
   map:
     image: map:v1
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile   
     volumes:
-      - ${HOSTPGDATA}:${PGDATA}
-      - ${HOSTTILESDIR}:${TILESDIR}
+      - openstreetmap-data:${PGDATA}
+      - openstreetmap-rendered-tiles:${TILESDIR}      
     ports:
       - "8080:80"
-    command: "run"
+    command: "run"      
+     
+
+volumes:
+  openstreetmap-data:
+    external: true
+    name: ${PGVOLUME}
+  openstreetmap-rendered-tiles:
+    external: true
+    name: ${TILESVOLUME}    

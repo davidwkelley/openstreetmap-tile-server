@@ -16,7 +16,9 @@ RUN apt-get update \
   && echo "deb [ trusted=yes ] https://apt.postgresql.org/pub/repos/apt/ `lsb_release -cs`-pgdg main" | tee /etc/apt/sources.list.d/pgdg.list \
   && wget --quiet -O - https://deb.nodesource.com/setup_10.x | bash - \
   && apt-get update \
-  && apt-get install -y nodejs
+  && apt-get install -y nodejs \
+  && apt-get update \
+  && apt-get install -y software-properties-common
 
 RUN apt-get install -y --no-install-recommends \
   apache2 \
@@ -30,7 +32,6 @@ RUN apt-get install -y --no-install-recommends \
   fonts-noto-hinted \
   fonts-noto-unhinted \
   gcc \
-  gdal-bin \
   git-core \
   libagg-dev \
   libboost-filesystem-dev \
@@ -40,7 +41,6 @@ RUN apt-get install -y --no-install-recommends \
   libcairomm-1.0-dev \
   libexpat1-dev \
   libfreetype6-dev \
-  libgdal-dev \
   libgeos++-dev \
   libgeos-dev \
   libgeotiff-epsg \
@@ -68,15 +68,24 @@ RUN apt-get install -y --no-install-recommends \
   python3-lxml \
   python3-psycopg2 \
   python3-shapely \
+  python3-pip \
   sudo \
   tar \
   ttf-unifont \
   unzip \
   wget \
-  zlib1g-dev \
-&& apt-get clean autoclean \
-&& apt-get autoremove --yes \
-&& rm -rf /var/lib/{apt,dpkg,cache,log}/
+  zlib1g-dev
+
+# Install Python utilities for loading shapefiles.
+RUN pip3 install pyyaml requests
+
+# Install newer version of GDAL.
+RUN add-apt-repository ppa:ubuntugis/ubuntugis-unstable && apt-get update && apt-get install -y --no-install-recommends \
+  gdal-bin \
+  libgdal-dev \
+ && apt-get clean autoclean \
+ && apt-get autoremove --yes \
+ && rm -rf /var/lib/{apt,dpkg,cache,log}
 
 # Set up PostGIS
 RUN wget https://download.osgeo.org/postgis/source/postgis-3.0.0.tar.gz -O postgis.tar.gz \
@@ -170,13 +179,10 @@ RUN mkdir -p /home/renderer/src \
  && chmod u+x /home/renderer/src/regional/trim_osc.py
 
 # Configure stylesheets
-RUN mkdir -p /home/renderer/src/openstreetmap-carto
+RUN mkdir -p /home/renderer/src/openstreetmap-carto/data
 
 COPY openstreetmap-carto/ /home/renderer/src/openstreetmap-carto/
-COPY project.mml /home/renderer/src/openstreetmap-carto/
-COPY shapefiles/ /home/renderer/src/openstreetmap-carto/data/
 COPY get-shapefiles.py /home/renderer/src/openstreetmap-carto/scripts
-
 
 RUN cd /home/renderer/src/openstreetmap-carto \
  && rm -rf .git \
@@ -188,7 +194,6 @@ RUN cd /home/renderer/src/openstreetmap-carto \
 RUN mkdir -p /home/renderer/src/osm-carto-highcontrast
 
 COPY osm-carto-highcontrast/ /home/renderer/src/osm-carto-highcontrast/
-COPY project-hc.mml /home/renderer/src/osm-carto-highcontrast/project.mml
 
 RUN cd /home/renderer/src/osm-carto-highcontrast \
  && rm -rf .git \
