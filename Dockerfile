@@ -158,7 +158,7 @@ RUN ln -sf /dev/stdout /var/log/apache2/access.log \
 COPY postgresql.custom.conf.tmpl /etc/postgresql/12/main/
 RUN chown -R postgres:postgres /var/lib/postgresql \
  && chown postgres:postgres /etc/postgresql/12/main/postgresql.custom.conf.tmpl \
- && echo "host all all 0.0.0.0/0 md5" >> /etc/postgresql/12/main/pg_hba.conf \
+ && echo "host all all all md5" >> /etc/postgresql/12/main/pg_hba.conf \
  && echo "host all all ::/0 md5" >> /etc/postgresql/12/main/pg_hba.conf
 
 # Copy update scripts
